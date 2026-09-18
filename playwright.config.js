@@ -28,6 +28,8 @@ export default defineConfig({
   use: {
     /* Base URL for Sauce Demo — use relative paths like page.goto('/') */
     baseURL: 'https://www.saucedemo.com',
+    /* Sauce Demo uses data-test, not data-testid */
+    testIdAttribute: 'data-test',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

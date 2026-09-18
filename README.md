@@ -9,14 +9,16 @@ End-to-end UI tests for [Sauce Demo](https://www.saucedemo.com/) (Swag Labs), bu
 | TC-01 | Login with valid credentials → inventory page |
 | TC-02 | Login with invalid password → error message |
 | TC-03 | Login with locked-out user → error message |
+| TC-04 | Login with empty credentials → username required error |
+| TC-05 | Add Sauce Labs Backpack to cart → badge and cart contents |
 
-More flows (cart, checkout, sorting) are planned.
+More flows (remove from cart, checkout, sorting) are planned.
 
 ## Project structure
 
 ```text
-├── pages/saucedemo/       # Page objects (locators + actions)
-├── tests/saucedemo/       # Test specs
+├── pages/saucedemo/       # Page objects + SaucedemoPageManager (getLoginPage, …)
+├── tests/saucedemo/       # Test specs (login, cart, …)
 ├── .env.example           # Template for credentials (copy to .env)
 ├── playwright.config.js   # Playwright + baseURL + dotenv
 └── .github/workflows/     # CI on push/PR
@@ -48,8 +50,9 @@ npm test
 # Sauce Demo only
 npm run test:saucedemo
 
-# Login specs only
+# Login or cart specs only
 npm run test:saucedemo:login
+npm run test:saucedemo:cart
 
 # Headed browser / Playwright UI
 npm run test:headed

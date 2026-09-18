@@ -8,6 +8,7 @@
     "test": "playwright test",
     "test:saucedemo": "playwright test tests/saucedemo",
     "test:saucedemo:login": "playwright test tests/saucedemo/login.spec.js",
+    "test:saucedemo:cart": "playwright test tests/saucedemo/cart.spec.js",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "report": "playwright show-report"

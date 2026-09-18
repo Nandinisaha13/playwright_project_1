@@ -1,18 +1,12 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../pages/saucedemo/LoginPage.js';
-import { InventoryPage } from '../../pages/saucedemo/InventoryPage.js';
+import { SaucedemoPageManager } from '../../pages/saucedemo/SaucedemoPageManager.js';
 
 /**
- * Sauce Demo — Login tests
- * Sauce Demo login scenarios (TC-01–TC-03)
- * Credentials: .env (local) or GitHub Actions secrets (CI) — loaded in playwright.config.js
+ * Sauce Demo — Login tests (TC-01–TC-04)
+ * Credentials: .env locally or GitHub Actions secrets in CI
  */
 test.describe('Sauce Demo — Login', () => {
-  /**
-   * TC-01: Login with valid credentials
-   * User logs in and lands on the Products / inventory page.
-   */
   test('TC-01: Login with valid credentials', async ({ page }) => {
     const username = process.env.SAUCE_STANDARD_USERNAME;
     const password = process.env.SAUCE_STANDARD_PASSWORD;
@@ -23,12 +17,12 @@ test.describe('Sauce Demo — Login', () => {
       );
     }
 
-    const loginPage = new LoginPage(page);
-    const inventoryPage = new InventoryPage(page);
+    const poManager = new SaucedemoPageManager(page);
+    const loginPage = poManager.getLoginPage();
+    const inventoryPage = poManager.getInventoryPage();
 
     await loginPage.goto();
     await loginPage.expectLoginFormVisible();
-
     await loginPage.login(username, password);
 
     await inventoryPage.expectLoaded();
@@ -36,9 +30,6 @@ test.describe('Sauce Demo — Login', () => {
     await expect(inventoryPage.inventoryList).toBeVisible();
   });
 
-  /**
-   * TC-02: Login with invalid password
-   */
   test('TC-02: Login with invalid password', async ({ page }) => {
     const username = process.env.SAUCE_STANDARD_USERNAME;
     const password = process.env.SAUCE_INVALID_PASSWORD;
@@ -49,20 +40,17 @@ test.describe('Sauce Demo — Login', () => {
       );
     }
 
-    const loginPage = new LoginPage(page);
+    const poManager = new SaucedemoPageManager(page);
+    const loginPage = poManager.getLoginPage();
 
     await loginPage.goto();
     await loginPage.login(username, password);
 
-    await loginPage.expectOnLoginPage();
     await loginPage.expectErrorMessage(
       'Epic sadface: Username and password do not match any user in this service',
     );
   });
 
-  /**
-   * TC-03: Login with locked-out user
-   */
   test('TC-03: Login with locked-out user', async ({ page }) => {
     const username = process.env.SAUCE_LOCKED_OUT_USERNAME;
     const password = process.env.SAUCE_LOCKED_OUT_PASSWORD;
@@ -73,12 +61,23 @@ test.describe('Sauce Demo — Login', () => {
       );
     }
 
-    const loginPage = new LoginPage(page);
+    const poManager = new SaucedemoPageManager(page);
+    const loginPage = poManager.getLoginPage();
 
     await loginPage.goto();
     await loginPage.login(username, password);
 
-    await loginPage.expectOnLoginPage();
     await loginPage.expectErrorMessage('Epic sadface: Sorry, this user has been locked out.');
+  });
+
+  test('TC-04: Login with empty credentials', async ({ page }) => {
+    const poManager = new SaucedemoPageManager(page);
+    const loginPage = poManager.getLoginPage();
+
+    await loginPage.goto();
+    await loginPage.expectLoginFormVisible();
+    await loginPage.submitLogin();
+
+    await loginPage.expectErrorMessage('Epic sadface: Username is required');
   });
 });
