@@ -1,0 +1,34 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    env:
+      # Map GitHub Actions secrets → process.env (same names as .env / .env.example)
+      SAUCE_STANDARD_USERNAME: ${{ secrets.SAUCE_STANDARD_USERNAME }}
+      SAUCE_STANDARD_PASSWORD: ${{ secrets.SAUCE_STANDARD_PASSWORD }}
+      SAUCE_LOCKED_OUT_USERNAME: ${{ secrets.SAUCE_LOCKED_OUT_USERNAME }}
+      SAUCE_LOCKED_OUT_PASSWORD: ${{ secrets.SAUCE_LOCKED_OUT_PASSWORD }}
+      SAUCE_INVALID_PASSWORD: ${{ secrets.SAUCE_INVALID_PASSWORD }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
