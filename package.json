@@ -9,6 +9,8 @@
     "test:saucedemo": "playwright test tests/saucedemo",
     "test:saucedemo:login": "playwright test tests/saucedemo/login.spec.js",
     "test:saucedemo:cart": "playwright test tests/saucedemo/cart.spec.js",
+    "test:saucedemo:inventory": "playwright test tests/saucedemo/inventory.spec.js",
+    "test:saucedemo:checkout": "playwright test tests/saucedemo/checkout.spec.js",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "report": "playwright show-report"

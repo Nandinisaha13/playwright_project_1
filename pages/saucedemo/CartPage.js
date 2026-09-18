@@ -22,4 +22,21 @@ export class CartPage {
     await expect(item.locator('[data-test="inventory-item-name"]')).toHaveText(productName);
     await expect(item.locator('[data-test="inventory-item-price"]')).toBeVisible();
   }
+
+  
+  async removeProduct(removeButtonTestId) {
+    await this.page.getByTestId(removeButtonTestId).click();
+  }
+
+  async expectCartEmpty() {
+    await expect(this.cartItem).toHaveCount(0);
+  }
+
+  async continueShopping() {
+    await this.page.getByTestId('continue-shopping').click();
+  }
+
+  async proceedToCheckout() {
+    await this.page.getByTestId('checkout').click();
+  }
 }

@@ -11,8 +11,13 @@ End-to-end UI tests for [Sauce Demo](https://www.saucedemo.com/) (Swag Labs), bu
 | TC-03 | Login with locked-out user → error message |
 | TC-04 | Login with empty credentials → username required error |
 | TC-05 | Add Sauce Labs Backpack to cart → badge and cart contents |
+| TC-06 | Remove product from cart → empty cart, no badge |
+| TC-07 | Sort inventory by name (A → Z) |
+| TC-08 | Sort inventory by price (low → high) |
+| TC-09 | Complete checkout (happy path) |
+| TC-10 | Checkout validation — missing first name |
 
-More flows (remove from cart, checkout, sorting) are planned.
+All catalogued Sauce Demo scenarios (TC-01–TC-10) are automated.
 
 ## Project structure
 
@@ -53,6 +58,8 @@ npm run test:saucedemo
 # Login or cart specs only
 npm run test:saucedemo:login
 npm run test:saucedemo:cart
+npm run test:saucedemo:inventory
+npm run test:saucedemo:checkout
 
 # Headed browser / Playwright UI
 npm run test:headed
