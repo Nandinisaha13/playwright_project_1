@@ -5,7 +5,7 @@ import { InventoryPage } from '../../pages/saucedemo/InventoryPage.js';
 
 /**
  * Sauce Demo — Login tests
- * Catalog: test-cases/saucedemo-test-cases.md
+ * Sauce Demo login scenarios (TC-01–TC-03)
  * Credentials: .env (local) or GitHub Actions secrets (CI) — loaded in playwright.config.js
  */
 test.describe('Sauce Demo — Login', () => {

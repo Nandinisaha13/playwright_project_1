@@ -11,3 +11,6 @@ node_modules/
 .env
 .env.local
 .env.*.local
+
+# Internal test planning (not published)
+test-cases/
