@@ -11,6 +11,10 @@ export class CartPage {
   }
 
 
+  async expectOnCartPage() {
+    await expect(this.title).toHaveText('Your Cart');
+  }
+
   async expectItemCount(count) {
     await expect(this.cartItem).toHaveCount(count);
   }

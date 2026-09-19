@@ -40,4 +40,23 @@ test.describe('Sauce Demo — Session', () => {
     await cartPage.expectProductInCart('Sauce Labs Backpack');
     await cartPage.expectProductInCart('Sauce Labs Bike Light');
   });
+
+  test('TC-15: Menu About opens Sauce Labs site, then return to inventory', async ({ page }) => {
+    requireStandardUserEnv();
+
+    const poManager = new SaucedemoPageManager(page);
+    const loginPage = poManager.getLoginPage();
+    const inventoryPage = poManager.getInventoryPage();
+    const menuPage = poManager.getMenuPage();
+    const aboutPage = poManager.getAboutPage();
+
+    await loginWithStandardUser(poManager);
+
+    await menuPage.goToAbout();
+    await aboutPage.expectSauceLabsMarketingSite();
+
+    await loginPage.goto();
+    await loginWithStandardUser(poManager);
+    await inventoryPage.expectLoaded();
+  });
 });

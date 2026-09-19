@@ -1,5 +1,5 @@
 // @ts-check
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { SaucedemoPageManager } from '../../pages/saucedemo/SaucedemoPageManager.js';
 import {
   loginAndAddBackpackToCart,
@@ -8,6 +8,11 @@ import {
 } from './helpers/saucedemoTestHelpers.js';
 
 /** All six inventory items — data-test ids match Sauce Demo add-to-cart buttons */
+const TWO_CART_PRODUCTS = [
+  { name: 'Sauce Labs Backpack', addToCartTestId: 'add-to-cart-sauce-labs-backpack' },
+  { name: 'Sauce Labs Bike Light', addToCartTestId: 'add-to-cart-sauce-labs-bike-light' },
+];
+
 const MULTI_CART_PRODUCTS = [
   { name: 'Sauce Labs Backpack', addToCartTestId: 'add-to-cart-sauce-labs-backpack' },
   { name: 'Sauce Labs Bike Light', addToCartTestId: 'add-to-cart-sauce-labs-bike-light' },
@@ -98,6 +103,55 @@ test.describe('Sauce Demo — Checkout', () => {
     await checkoutPage.expectCheckoutOverview();
     await checkoutPage.expectOrderSummaryForSubtotal(expectedSubtotal);
 
+    await checkoutPage.finishOrder();
+    await checkoutPage.expectOrderComplete();
+  });
+
+  test('TC-14: Cancel checkout preserves cart, then complete order', async ({ page }) => {
+    requireStandardUserEnv();
+
+    const poManager = new SaucedemoPageManager(page);
+    const inventoryPage = poManager.getInventoryPage();
+    const cartPage = poManager.getCartPage();
+    const checkoutPage = poManager.getCheckoutPage();
+
+    await loginWithStandardUser(poManager);
+
+    for (const product of TWO_CART_PRODUCTS) {
+      await inventoryPage.addProductToCart(product.addToCartTestId);
+    }
+    await inventoryPage.expectCartBadgeCount(TWO_CART_PRODUCTS.length);
+
+    await inventoryPage.openCart();
+    await cartPage.expectItemCount(TWO_CART_PRODUCTS.length);
+    for (const product of TWO_CART_PRODUCTS) {
+      await cartPage.expectProductInCart(product.name);
+    }
+
+    const cartPrices = await cartPage.getItemPrices();
+    const expectedSubtotal = cartPage.sumPrices(cartPrices);
+
+    await cartPage.proceedToCheckout();
+    await checkoutPage.expectCheckoutInformationStep();
+    await checkoutPage.cancelCheckout();
+
+    await cartPage.expectOnCartPage();
+    await cartPage.expectItemCount(TWO_CART_PRODUCTS.length);
+    for (const product of TWO_CART_PRODUCTS) {
+      await cartPage.expectProductInCart(product.name);
+    }
+    const cartPricesAfterCancel = await cartPage.getItemPrices();
+    expect(cartPage.sumPrices(cartPricesAfterCancel)).toBeCloseTo(expectedSubtotal, 2);
+
+    await cartPage.proceedToCheckout();
+    await checkoutPage.fillCheckoutInformation({
+      firstName: 'Nandini',
+      lastName: 'Saha',
+      postalCode: '12345',
+    });
+    await checkoutPage.continueCheckout();
+    await checkoutPage.expectCheckoutOverview();
+    await checkoutPage.expectOrderSummaryForSubtotal(expectedSubtotal);
     await checkoutPage.finishOrder();
     await checkoutPage.expectOrderComplete();
   });

@@ -19,8 +19,10 @@ End-to-end UI tests for [Sauce Demo](https://www.saucedemo.com/) (Swag Labs), bu
 | TC-11 | All six products in cart — verify subtotal/total math, then complete checkout |
 | TC-12 | Remove item from cart, continue shopping, sort and add item — checkout with updated totals |
 | TC-13 | Add via product detail page, logout, re-login — cart still has items (localStorage) |
+| TC-14 | Cancel checkout — cart unchanged, then complete order |
+| TC-15 | Menu About → Sauce Labs site, return to demo and inventory |
 
-All catalogued Sauce Demo scenarios (TC-01–TC-13) are automated.
+All catalogued Sauce Demo scenarios (TC-01–TC-15) are automated.
 
 ## Project structure
 
@@ -80,7 +82,7 @@ On push or pull request to `main` / `master`, GitHub Actions will:
 
 1. Install dependencies and Playwright **Chromium** (with browser cache)
 2. Verify all required secrets are set (fail fast with a clear error if any are missing)
-3. Run `npm run test:saucedemo` (TC-01–TC-13)
+3. Run `npm run test:saucedemo` (TC-01–TC-15)
 4. Upload the **HTML report** on every run; upload **screenshots / video / traces** if tests fail
 
 Add these **repository secrets** (Settings → Secrets and variables → Actions) so tests can log in:

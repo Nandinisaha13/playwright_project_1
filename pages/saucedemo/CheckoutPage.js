@@ -6,7 +6,9 @@ export class CheckoutPage {
     this.firstNameInput = page.getByTestId('firstName');
     this.lastNameInput = page.getByTestId('lastName');
     this.postalCodeInput = page.getByTestId('postalCode');
+    this.cancelButton = page.getByTestId('cancel');
     this.continueButton = page.getByTestId('continue');
+    this.informationTitle = page.locator('.title');
     this.finishButton = page.getByTestId('finish');
     this.errorMessage = page.locator('[data-test="error"]');
     this.completeHeader = page.getByTestId('complete-header');
@@ -57,6 +59,14 @@ export class CheckoutPage {
     }
     await this.lastNameInput.fill(info.lastName);
     await this.postalCodeInput.fill(info.postalCode);
+  }
+
+  async expectCheckoutInformationStep() {
+    await expect(this.informationTitle).toHaveText('Checkout: Your Information');
+  }
+
+  async cancelCheckout() {
+    await this.cancelButton.click();
   }
 
   async continueCheckout() {
