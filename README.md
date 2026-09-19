@@ -71,7 +71,14 @@ npm run report
 
 ## CI (GitHub Actions)
 
-On push or pull request to `main`, the workflow installs dependencies, runs Playwright, and uploads the HTML report as an artifact.
+Workflow: [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml)
+
+On push or pull request to `main` / `master`, GitHub Actions will:
+
+1. Install dependencies and Playwright **Chromium** (with browser cache)
+2. Verify all required secrets are set (fail fast with a clear error if any are missing)
+3. Run `npm run test:saucedemo` (TC-01–TC-10)
+4. Upload the **HTML report** on every run; upload **screenshots / video / traces** if tests fail
 
 Add these **repository secrets** (Settings → Secrets and variables → Actions) so tests can log in:
 
