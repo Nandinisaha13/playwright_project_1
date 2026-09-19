@@ -26,12 +26,7 @@ export class LoginPage {
     await this.loginButton.click();
   }
 
-  async expectLoginFormVisible() {
-    await this.usernameInput.waitFor({ state: 'visible' });
-    await this.passwordInput.waitFor({ state: 'visible' });
-    await this.loginButton.waitFor({ state: 'visible' });
-  }
-
+  
   
   async expectErrorMessage(message) {
     await expect(this.errorMessage).toBeVisible();

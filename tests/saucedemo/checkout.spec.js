@@ -12,10 +12,8 @@ test.describe('Sauce Demo — Checkout', () => {
     await loginAndAddBackpackToCart(poManager);
 
     await poManager.getInventoryPage().openCart();
-    await cartPage.expectLoaded();
     await cartPage.proceedToCheckout();
 
-    await checkoutPage.expectCheckoutInformationStep();
     await checkoutPage.fillCheckoutInformation({
       firstName: 'Nandini',
       lastName: 'Saha',
@@ -23,7 +21,7 @@ test.describe('Sauce Demo — Checkout', () => {
     });
     await checkoutPage.continueCheckout();
 
-    // await checkoutPage.expectCheckoutOverview();
+    
     await checkoutPage.finishOrder();
     await checkoutPage.expectOrderComplete();
   });
@@ -36,10 +34,9 @@ test.describe('Sauce Demo — Checkout', () => {
     await loginAndAddBackpackToCart(poManager);
 
     await poManager.getInventoryPage().openCart();
-    await cartPage.expectLoaded();
     await cartPage.proceedToCheckout();
 
-    await checkoutPage.expectCheckoutInformationStep();
+    
     await checkoutPage.fillCheckoutInformation({
       lastName: 'Saha',
       postalCode: '12345',

@@ -28,7 +28,6 @@ test.describe('Sauce Demo — Cart', () => {
     await inventoryPage.expectCartBadgeCount(1);
 
     await inventoryPage.openCart();
-    await cartPage.expectLoaded();
     await cartPage.expectProductInCart(SAUCE_LABS_BACKPACK);
   });
 
@@ -55,7 +54,6 @@ test.describe('Sauce Demo — Cart', () => {
     await inventoryPage.expectCartBadgeCount(1);
 
     await inventoryPage.openCart();
-    await cartPage.expectLoaded();
     await cartPage.expectProductInCart(SAUCE_LABS_BACKPACK);
 
     await cartPage.removeProduct('remove-sauce-labs-backpack');

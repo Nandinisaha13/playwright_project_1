@@ -18,7 +18,7 @@ export class InventoryPage {
     await this.title.waitFor({ state: 'visible' });
   }
 
- 
+
   async addProductToCart(addToCartTestId) {
     await this.page.getByTestId(addToCartTestId).click();
   }
@@ -35,7 +35,7 @@ export class InventoryPage {
     await expect(this.cartBadge).toHaveCount(0);
   }
 
-  
+
   async sortBy(optionValue) {
     await this.sortDropdown.selectOption(optionValue);
   }

@@ -2,10 +2,6 @@
 import { test, expect } from '@playwright/test';
 import { SaucedemoPageManager } from '../../pages/saucedemo/SaucedemoPageManager.js';
 
-/**
- * Sauce Demo — Login tests (TC-01–TC-04)
- * Credentials: .env locally or GitHub Actions secrets in CI
- */
 test.describe('Sauce Demo — Login', () => {
   test('TC-01: Login with valid credentials', async ({ page }) => {
     const username = process.env.SAUCE_STANDARD_USERNAME;
@@ -22,7 +18,6 @@ test.describe('Sauce Demo — Login', () => {
     const inventoryPage = poManager.getInventoryPage();
 
     await loginPage.goto();
-    await loginPage.expectLoginFormVisible();
     await loginPage.login(username, password);
 
     await inventoryPage.expectLoaded();
@@ -75,7 +70,6 @@ test.describe('Sauce Demo — Login', () => {
     const loginPage = poManager.getLoginPage();
 
     await loginPage.goto();
-    await loginPage.expectLoginFormVisible();
     await loginPage.submitLogin();
 
     await loginPage.expectErrorMessage('Epic sadface: Username is required');

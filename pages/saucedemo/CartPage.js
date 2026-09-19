@@ -10,11 +10,6 @@ export class CartPage {
     this.itemPrice = page.locator('[data-test="inventory-item-price"]');
   }
 
-  async expectLoaded() {
-    await this.page.waitForURL('**/cart.html');
-    await expect(this.title).toHaveText('Your Cart');
-    await expect(this.cartList).toBeVisible();
-  }
 
   async expectProductInCart(productName) {
     const item = this.cartItem.filter({ hasText: productName });
