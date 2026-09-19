@@ -10,6 +10,42 @@ export class CheckoutPage {
     this.finishButton = page.getByTestId('finish');
     this.errorMessage = page.locator('[data-test="error"]');
     this.completeHeader = page.getByTestId('complete-header');
+    this.overviewTitle = page.locator('.title');
+    this.subtotalLabel = page.getByTestId('subtotal-label');
+    this.taxLabel = page.getByTestId('tax-label');
+    this.totalLabel = page.getByTestId('total-label');
+  }
+
+  static parseDollarAmount(text) {
+    const match = text.match(/\$([\d.]+)/);
+    if (!match) {
+      throw new Error(`Could not parse dollar amount from: ${text}`);
+    }
+    return Number.parseFloat(match[1]);
+  }
+
+  async expectCheckoutOverview() {
+    await expect(this.overviewTitle).toHaveText('Checkout: Overview');
+    await expect(this.subtotalLabel).toBeVisible();
+    await expect(this.taxLabel).toBeVisible();
+    await expect(this.totalLabel).toBeVisible();
+  }
+
+  async getOrderSummary() {
+    const subtotalText = await this.subtotalLabel.textContent();
+    const taxText = await this.taxLabel.textContent();
+    const totalText = await this.totalLabel.textContent();
+    return {
+      subtotal: CheckoutPage.parseDollarAmount(subtotalText ?? ''),
+      tax: CheckoutPage.parseDollarAmount(taxText ?? ''),
+      total: CheckoutPage.parseDollarAmount(totalText ?? ''),
+    };
+  }
+
+  async expectOrderSummaryForSubtotal(expectedSubtotal) {
+    const summary = await this.getOrderSummary();
+    expect(summary.subtotal).toBeCloseTo(expectedSubtotal, 2);
+    expect(summary.total).toBeCloseTo(summary.subtotal + summary.tax, 2);
   }
 
 

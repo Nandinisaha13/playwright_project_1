@@ -13,11 +13,12 @@ export class InventoryPage {
     this.productPrices = page.getByTestId('inventory-item-price');
   }
 
-  async expectLoaded() {
-    await this.page.waitForURL('**/inventory.html');
-    await this.title.waitFor({ state: 'visible' });
-  }
 
+
+  async expectLoaded() {
+    await expect(this.title).toHaveText('Products');
+    await expect(this.inventoryContainer).toBeVisible();
+  }
 
   async addProductToCart(addToCartTestId) {
     await this.page.getByTestId(addToCartTestId).click();

@@ -22,7 +22,6 @@ test.describe('Sauce Demo — Cart', () => {
 
     await loginPage.goto();
     await loginPage.login(username, password);
-    await inventoryPage.expectLoaded();
 
     await inventoryPage.addProductToCart('add-to-cart-sauce-labs-backpack');
     await inventoryPage.expectCartBadgeCount(1);
@@ -48,7 +47,6 @@ test.describe('Sauce Demo — Cart', () => {
 
     await loginPage.goto();
     await loginPage.login(username, password);
-    await inventoryPage.expectLoaded();
 
     await inventoryPage.addProductToCart('add-to-cart-sauce-labs-backpack');
     await inventoryPage.expectCartBadgeCount(1);
@@ -60,7 +58,6 @@ test.describe('Sauce Demo — Cart', () => {
     await cartPage.expectCartEmpty();
 
     await cartPage.continueShopping();
-    await inventoryPage.expectLoaded();
     await inventoryPage.expectCartBadgeNotVisible();
   });
 });

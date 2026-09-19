@@ -11,6 +11,21 @@ export class CartPage {
   }
 
 
+  async expectItemCount(count) {
+    await expect(this.cartItem).toHaveCount(count);
+  }
+
+  async getItemPrices() {
+    const priceTexts = await this.cartItem
+      .locator('[data-test="inventory-item-price"]')
+      .allTextContents();
+    return priceTexts.map((text) => Number.parseFloat(text.replace('$', '')));
+  }
+
+  sumPrices(prices) {
+    return prices.reduce((sum, price) => sum + price, 0);
+  }
+
   async expectProductInCart(productName) {
     const item = this.cartItem.filter({ hasText: productName });
     await expect(item).toHaveCount(1);
