@@ -20,6 +20,10 @@ export class InventoryPage {
     await expect(this.inventoryContainer).toBeVisible();
   }
 
+  async openProductDetails(productName) {
+    await this.page.getByTestId('inventory-item-name').filter({ hasText: productName }).click();
+  }
+
   async addProductToCart(addToCartTestId) {
     await this.page.getByTestId(addToCartTestId).click();
   }

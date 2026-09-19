@@ -33,4 +33,8 @@ export class LoginPage {
     await expect(this.errorMessage).toHaveText(message);
   }
 
+  async expectLoginScreen() {
+    await expect(this.usernameInput).toBeVisible();
+    await expect(this.loginButton).toBeVisible();
+  }
 }

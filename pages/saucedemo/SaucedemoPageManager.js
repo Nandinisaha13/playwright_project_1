@@ -2,6 +2,8 @@ import { LoginPage } from './LoginPage.js';
 import { InventoryPage } from './InventoryPage.js';
 import { CartPage } from './CartPage.js';
 import { CheckoutPage } from './CheckoutPage.js';
+import { ProductDetailPage } from './ProductDetailPage.js';
+import { MenuPage } from './MenuPage.js';
 
 /**
  * Page Object Manager — one instance per test; page objects are created here, not in specs.
@@ -13,6 +15,8 @@ export class SaucedemoPageManager {
     this.inventoryPage = new InventoryPage(page);
     this.cartPage = new CartPage(page);
     this.checkoutPage = new CheckoutPage(page);
+    this.productDetailPage = new ProductDetailPage(page);
+    this.menuPage = new MenuPage(page);
   }
 
   getLoginPage() {
@@ -29,5 +33,13 @@ export class SaucedemoPageManager {
 
   getCheckoutPage() {
     return this.checkoutPage;
+  }
+
+  getProductDetailPage() {
+    return this.productDetailPage;
+  }
+
+  getMenuPage() {
+    return this.menuPage;
   }
 }

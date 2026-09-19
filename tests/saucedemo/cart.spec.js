@@ -1,6 +1,10 @@
 // @ts-check
 import { test } from '@playwright/test';
 import { SaucedemoPageManager } from '../../pages/saucedemo/SaucedemoPageManager.js';
+import {
+  loginWithStandardUser,
+  requireStandardUserEnv,
+} from './helpers/saucedemoTestHelpers.js';
 
 const SAUCE_LABS_BACKPACK = 'Sauce Labs Backpack';
 
@@ -59,5 +63,53 @@ test.describe('Sauce Demo — Cart', () => {
 
     await cartPage.continueShopping();
     await inventoryPage.expectCartBadgeNotVisible();
+  });
+
+  test('TC-12: Edit cart, continue shopping, sort and checkout with updated totals', async ({
+    page,
+  }) => {
+    requireStandardUserEnv();
+
+    const poManager = new SaucedemoPageManager(page);
+    const inventoryPage = poManager.getInventoryPage();
+    const cartPage = poManager.getCartPage();
+    const checkoutPage = poManager.getCheckoutPage();
+
+    await loginWithStandardUser(poManager);
+
+    await inventoryPage.addProductToCart('add-to-cart-sauce-labs-backpack');
+    await inventoryPage.addProductToCart('add-to-cart-sauce-labs-fleece-jacket');
+    await inventoryPage.addProductToCart('add-to-cart-sauce-labs-bolt-t-shirt');
+    await inventoryPage.expectCartBadgeCount(3);
+
+    await inventoryPage.openCart();
+    await cartPage.removeProduct('remove-sauce-labs-fleece-jacket');
+    await cartPage.expectItemCount(2);
+    await cartPage.continueShopping();
+
+    await inventoryPage.sortBy('lohi');
+    await inventoryPage.addProductToCart('add-to-cart-sauce-labs-bike-light');
+    await inventoryPage.expectCartBadgeCount(3);
+
+    await inventoryPage.openCart();
+    await cartPage.expectItemCount(3);
+    await cartPage.expectProductInCart('Sauce Labs Backpack');
+    await cartPage.expectProductInCart('Sauce Labs Bolt T-Shirt');
+    await cartPage.expectProductInCart('Sauce Labs Bike Light');
+
+    const cartPrices = await cartPage.getItemPrices();
+    const expectedSubtotal = cartPage.sumPrices(cartPrices);
+
+    await cartPage.proceedToCheckout();
+    await checkoutPage.fillCheckoutInformation({
+      firstName: 'Nandini',
+      lastName: 'Saha',
+      postalCode: '12345',
+    });
+    await checkoutPage.continueCheckout();
+    await checkoutPage.expectCheckoutOverview();
+    await checkoutPage.expectOrderSummaryForSubtotal(expectedSubtotal);
+    await checkoutPage.finishOrder();
+    await checkoutPage.expectOrderComplete();
   });
 });
