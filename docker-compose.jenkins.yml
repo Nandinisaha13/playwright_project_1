@@ -4,7 +4,10 @@
 #   open http://localhost:8080
 services:
   jenkins:
-    image: jenkins/jenkins:lts-jdk21
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    image: playwright-jenkins:lts-jdk21-node20
     container_name: jenkins
     ports:
       - '8080:8080'

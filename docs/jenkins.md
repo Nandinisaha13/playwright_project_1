@@ -13,18 +13,18 @@ Playwright **retries** (`retries: 2` when `CI=true`) come from [`playwright.conf
 
 ## 1. Run Jenkins locally (Docker)
 
-Use **LTS + Java 21** (recommended; avoids the Java 17 end-of-life banner):
+Use **LTS + Java 21 + Node 20** (required for [`Jenkinsfile`](../Jenkinsfile) `npm ci` / Playwright):
 
 ```bash
-# From repo root (recommended)
-docker compose -f docker-compose.jenkins.yml up -d
+# From repo root (recommended — builds Dockerfile.jenkins)
+docker compose -f docker-compose.jenkins.yml up -d --build
 
-# Or one-off run (same image + volume name)
-docker run -d --name jenkins \
-  -p 8080:8080 -p 50000:50000 \
-  -v jenkins_home:/var/jenkins_home \
-  jenkins/jenkins:lts-jdk21
+# Verify Node inside the container
+docker exec jenkins node --version
+docker exec jenkins npm --version
 ```
+
+Plain `jenkins/jenkins:lts-jdk21` **does not include Node**; the Install stage will fail with `node: not found` until you use this compose file or install Node manually.
 
 1. Open http://localhost:8080
 2. First-time only — initial admin password:  
