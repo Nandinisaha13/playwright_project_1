@@ -157,5 +157,6 @@ Optional: refactor the workflow to call `bash scripts/ci-verify-sauce-env.sh` in
 ## Troubleshooting
 
 - **Credentials stage fails** — ID typo; credential must be **Secret text**, not username/password (unless you change the Jenkinsfile).
-- **Playwright install fails** — use a Linux agent or switch to `Jenkinsfile.docker`.
+- **`su: Authentication failure` during `playwright install --with-deps`** — the Jenkins user cannot become root. Use this repo’s `Dockerfile.jenkins` (pre-installs `playwright install-deps`) and `npx playwright install chromium` in the `Jenkinsfile` (no `--with-deps`).
+- **Playwright install fails (other)** — use a Linux agent or switch to `Jenkinsfile.docker`.
 - **Tests pass locally, fail on Jenkins** — confirm `CI=true` (set in pipeline); check archived `test-results` for traces.

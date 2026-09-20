@@ -40,7 +40,8 @@ pipeline {
           node --version
           npm --version
           npm ci
-          npx playwright install --with-deps chromium
+          # OS deps are installed in Dockerfile.jenkins (root). --with-deps needs su and fails as jenkins user.
+          npx playwright install chromium
         '''
       }
     }

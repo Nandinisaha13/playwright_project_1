@@ -9,4 +9,13 @@ RUN apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
+# OS libraries for Chromium (as root). Pipeline uses `playwright install chromium` only — no --with-deps.
+RUN mkdir -p /opt/playwright-setup \
+  && cd /opt/playwright-setup \
+  && npm init -y \
+  && npm install @playwright/test@1.63.0 \
+  && npx playwright install-deps chromium \
+  && cd / \
+  && rm -rf /opt/playwright-setup
+
 USER jenkins
