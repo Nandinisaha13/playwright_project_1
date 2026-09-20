@@ -58,5 +58,6 @@ test.describe('Sauce Demo — Session', () => {
     await loginPage.goto();
     await loginWithStandardUser(poManager);
     await inventoryPage.expectLoaded();
-  });
+    await page.pause();
+    });
 });
