@@ -7,6 +7,7 @@ for var in SAUCE_STANDARD_USERNAME SAUCE_STANDARD_PASSWORD \
   if [ -z "${!var:-}" ]; then
     echo "$var=MISSING"
   else
-    echo "$var=SET (length ${#!var})"
+    value="${!var}"
+    echo "$var=SET (length ${#value})"
   fi
 done
