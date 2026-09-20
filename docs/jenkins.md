@@ -100,17 +100,19 @@ The `jenkins` user must be able to run `npm ci` and Playwright’s browser insta
 
 **Manage Jenkins → Credentials → (global) → Add Credentials**
 
-Create **five** credentials of type **Secret text**. Use these **IDs exactly** (they match the `Jenkinsfile`):
+Create **five** credentials of type **Secret text** (not “Username with password”). Use these **IDs exactly**:
 
-| Credential ID | Value (from Sauce Demo / your `.env`) |
-|---------------|----------------------------------------|
-| `sauce-standard-username` | e.g. `standard_user` |
-| `sauce-standard-password` | standard user password |
-| `sauce-locked-out-username` | e.g. `locked_out_user` |
-| `sauce-locked-out-password` | locked-out password |
-| `sauce-invalid-password` | any wrong password for TC-02 |
+| Credential ID | Secret value (copy exactly, no extra spaces) |
+|---------------|---------------------------------------------|
+| `sauce-standard-username` | `standard_user` |
+| `sauce-standard-password` | `secret_sauce` |
+| `sauce-locked-out-username` | `locked_out_user` |
+| `sauce-locked-out-password` | `secret_sauce` |
+| `sauce-invalid-password` | e.g. `wrong_password` |
 
-Names match [`.env.example`](../.env.example).
+Names match [`.env.example`](../.env.example). Values are listed on [saucedemo.com](https://www.saucedemo.com/).
+
+**13 failed, 2 passed?** Usually **TC-02** + **TC-04** only — fix `sauce-standard-password` (`secret_sauce`, length **11**). Check **Verify credentials** log for `SAUCE_STANDARD_PASSWORD=SET (length 11)`.
 
 ---
 

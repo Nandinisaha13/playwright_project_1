@@ -1,17 +1,12 @@
 /**
  * Declarative Pipeline — Sauce Demo Playwright E2E
  *
- * Prerequisites on the Jenkins controller/agent:
- *   - Node.js 18+ and npm on PATH (or use the Docker agent block below)
- *   - Linux recommended (Playwright browser deps)
+ * Credentials (Manage Jenkins → Credentials → Secret text). IDs must match exactly:
+ *   sauce-standard-username, sauce-standard-password
+ *   sauce-locked-out-username, sauce-locked-out-password
+ *   sauce-invalid-password
  *
- * Credentials (Jenkins → Manage Jenkins → Credentials):
- *   Create five "Secret text" credentials with these IDs (values from Sauce Demo / .env):
- *     sauce-standard-username, sauce-standard-password
- *     sauce-locked-out-username, sauce-locked-out-password
- *     sauce-invalid-password
- *
- * Job: New Item → Pipeline → Pipeline script from SCM → point at this repo, branch main.
+ * Sauce Demo values: https://www.saucedemo.com/ (see docs/jenkins.md)
  */
 pipeline {
   agent any
@@ -24,6 +19,11 @@ pipeline {
 
   environment {
     CI = 'true'
+    SAUCE_STANDARD_USERNAME = credentials('sauce-standard-username')
+    SAUCE_STANDARD_PASSWORD = credentials('sauce-standard-password')
+    SAUCE_LOCKED_OUT_USERNAME = credentials('sauce-locked-out-username')
+    SAUCE_LOCKED_OUT_PASSWORD = credentials('sauce-locked-out-password')
+    SAUCE_INVALID_PASSWORD = credentials('sauce-invalid-password')
   }
 
   stages {
@@ -40,7 +40,6 @@ pipeline {
           node --version
           npm --version
           npm ci
-          # OS deps are installed in Dockerfile.jenkins (root). --with-deps needs su and fails as jenkins user.
           npx playwright install chromium
         '''
       }
@@ -48,29 +47,13 @@ pipeline {
 
     stage('Verify credentials') {
       steps {
-        withCredentials([
-          string(credentialsId: 'sauce-standard-username', variable: 'SAUCE_STANDARD_USERNAME'),
-          string(credentialsId: 'sauce-standard-password', variable: 'SAUCE_STANDARD_PASSWORD'),
-          string(credentialsId: 'sauce-locked-out-username', variable: 'SAUCE_LOCKED_OUT_USERNAME'),
-          string(credentialsId: 'sauce-locked-out-password', variable: 'SAUCE_LOCKED_OUT_PASSWORD'),
-          string(credentialsId: 'sauce-invalid-password', variable: 'SAUCE_INVALID_PASSWORD'),
-        ]) {
-          sh 'bash scripts/ci-verify-sauce-env.sh'
-        }
+        sh 'bash scripts/ci-verify-sauce-env.sh'
       }
     }
 
     stage('Playwright E2E') {
       steps {
-        withCredentials([
-          string(credentialsId: 'sauce-standard-username', variable: 'SAUCE_STANDARD_USERNAME'),
-          string(credentialsId: 'sauce-standard-password', variable: 'SAUCE_STANDARD_PASSWORD'),
-          string(credentialsId: 'sauce-locked-out-username', variable: 'SAUCE_LOCKED_OUT_USERNAME'),
-          string(credentialsId: 'sauce-locked-out-password', variable: 'SAUCE_LOCKED_OUT_PASSWORD'),
-          string(credentialsId: 'sauce-invalid-password', variable: 'SAUCE_INVALID_PASSWORD'),
-        ]) {
-          sh 'npm run test:saucedemo -- --project=chromium'
-        }
+        sh 'npm run test:saucedemo -- --project=chromium'
       }
     }
   }

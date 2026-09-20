@@ -17,3 +17,4 @@ if [ "$missing" -ne 0 ]; then
 fi
 
 echo "All required SAUCE_* environment variables are set."
+bash "$(dirname "$0")/ci-print-sauce-env-status.sh"
