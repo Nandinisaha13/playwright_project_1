@@ -1,0 +1,88 @@
+/**
+ * Same pipeline as Jenkinsfile, but runs inside the official Playwright Docker image
+ * (no `playwright install` step). Requires the Docker Pipeline plugin and an agent
+ * that can run Docker containers (e.g. mount /var/run/docker.sock).
+ *
+ * Job: use "Pipeline script from SCM" and set Script Path to Jenkinsfile.docker
+ */
+pipeline {
+  agent {
+    docker {
+      image 'mcr.microsoft.com/playwright:v1.63.0-jammy'
+      reuseNode true
+    }
+  }
+
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '15'))
+    timeout(time: 30, unit: 'MINUTES')
+    timestamps()
+  }
+
+  environment {
+    CI = 'true'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Install dependencies') {
+      steps {
+        sh '''
+          set -e
+          node --version
+          npm ci
+        '''
+      }
+    }
+
+    stage('Verify credentials') {
+      steps {
+        withCredentials([
+          string(credentialsId: 'sauce-standard-username', variable: 'SAUCE_STANDARD_USERNAME'),
+          string(credentialsId: 'sauce-standard-password', variable: 'SAUCE_STANDARD_PASSWORD'),
+          string(credentialsId: 'sauce-locked-out-username', variable: 'SAUCE_LOCKED_OUT_USERNAME'),
+          string(credentialsId: 'sauce-locked-out-password', variable: 'SAUCE_LOCKED_OUT_PASSWORD'),
+          string(credentialsId: 'sauce-invalid-password', variable: 'SAUCE_INVALID_PASSWORD'),
+        ]) {
+          sh 'bash scripts/ci-verify-sauce-env.sh'
+        }
+      }
+    }
+
+    stage('Playwright E2E') {
+      steps {
+        withCredentials([
+          string(credentialsId: 'sauce-standard-username', variable: 'SAUCE_STANDARD_USERNAME'),
+          string(credentialsId: 'sauce-standard-password', variable: 'SAUCE_STANDARD_PASSWORD'),
+          string(credentialsId: 'sauce-locked-out-username', variable: 'SAUCE_LOCKED_OUT_USERNAME'),
+          string(credentialsId: 'sauce-locked-out-password', variable: 'SAUCE_LOCKED_OUT_PASSWORD'),
+          string(credentialsId: 'sauce-invalid-password', variable: 'SAUCE_INVALID_PASSWORD'),
+        ]) {
+          sh 'npm run test:saucedemo -- --project=chromium'
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      archiveArtifacts(
+        artifacts: 'playwright-report/**',
+        allowEmptyArchive: true,
+        fingerprint: true,
+      )
+    }
+    failure {
+      archiveArtifacts(
+        artifacts: 'test-results/**',
+        allowEmptyArchive: true,
+        fingerprint: true,
+      )
+    }
+  }
+}

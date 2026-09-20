@@ -8,7 +8,7 @@ on:
 
 concurrency:
   group: playwright-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: true #this is for the 2 pushes one after other then only last ci pipeline works
 
 jobs:
   test:
@@ -53,16 +53,7 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
 
       - name: Verify GitHub Actions secrets
-        run: |
-          missing=0
-          for var in SAUCE_STANDARD_USERNAME SAUCE_STANDARD_PASSWORD \
-            SAUCE_LOCKED_OUT_USERNAME SAUCE_LOCKED_OUT_PASSWORD SAUCE_INVALID_PASSWORD; do
-            if [ -z "${!var}" ]; then
-              echo "::error::Repository secret $var is not set. Add it under Settings → Secrets and variables → Actions."
-              missing=1
-            fi
-          done
-          exit $missing
+        run: bash scripts/ci-verify-sauce-env.sh
 
       - name: Run Playwright tests
         run: npm run test:saucedemo -- --project=chromium

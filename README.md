@@ -1,6 +1,6 @@
 # Playwright E2E — Sauce Demo
 
-End-to-end UI tests for [Sauce Demo](https://www.saucedemo.com/) (Swag Labs), built with **Playwright** and **JavaScript**. Uses the **Page Object Model**, environment-based credentials, and **GitHub Actions** for CI.
+End-to-end UI tests for [Sauce Demo](https://www.saucedemo.com/) (Swag Labs), built with **Playwright** and **JavaScript**. Uses the **Page Object Model**, environment-based credentials, **GitHub Actions**, and an optional **Jenkins** pipeline.
 
 ## What’s covered
 
@@ -31,6 +31,9 @@ All catalogued Sauce Demo scenarios (TC-01–TC-15) are automated.
 ├── tests/saucedemo/       # Test specs (login, cart, …)
 ├── .env.example           # Template for credentials (copy to .env)
 ├── playwright.config.js   # Playwright + baseURL + dotenv
+├── Jenkinsfile            # Jenkins Declarative Pipeline (Node agent)
+├── Jenkinsfile.docker     # Same tests, Playwright Docker image
+├── docs/jenkins.md        # Jenkins setup guide
 └── .github/workflows/     # CI on push/PR
 ```
 
@@ -95,11 +98,17 @@ Add these **repository secrets** (Settings → Secrets and variables → Actions
 
 Names match [`.env.example`](.env.example).
 
+## CI (Jenkins)
+
+Pipeline definitions: [`Jenkinsfile`](Jenkinsfile) (Node + `playwright install`) or [`Jenkinsfile.docker`](Jenkinsfile.docker) (official Playwright image).
+
+Step-by-step setup (credentials, job creation, artifacts, upgrades): **[`docs/jenkins.md`](docs/jenkins.md)**. Local Jenkins: `docker compose -f docker-compose.jenkins.yml up -d`
+
 ## Tech stack
 
 - [@playwright/test](https://playwright.dev/)
 - [dotenv](https://github.com/motdotla/dotenv) for local env loading
-- GitHub Actions
+- GitHub Actions and Jenkins (Declarative Pipeline)
 
 ## Author
 
