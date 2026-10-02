@@ -11,6 +11,7 @@
     "test:saucedemo:cart": "playwright test tests/saucedemo/cart.spec.js",
     "test:saucedemo:inventory": "playwright test tests/saucedemo/inventory.spec.js",
     "test:saucedemo:checkout": "playwright test tests/saucedemo/checkout.spec.js",
+    "test:automationexercise": "playwright test tests/automationexercise --project=automationexercise-chromium",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
     "report": "playwright show-report"

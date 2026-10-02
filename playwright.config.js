@@ -41,7 +41,19 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: /automationexercise/,
       use: { ...devices['Desktop Chrome'] },
+    },
+
+    /* Automation Exercise has its own baseURL and uses data-qa for test ids. */
+    {
+      name: 'automationexercise-chromium',
+      testMatch: /automationexercise\/.*\.spec\.js/,
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'https://automationexercise.com',
+        testIdAttribute: 'data-qa',
+      },
     },
 
     // {
